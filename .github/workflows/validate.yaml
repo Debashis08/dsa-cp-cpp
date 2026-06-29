@@ -1,0 +1,129 @@
+name: validate
+
+on:
+  pull_request:
+    types: [opened, synchronize]
+    branches:
+      - 'release/*'
+      - 'main'
+
+jobs:
+  # job 1: Policy Check
+  validate-branch-policy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Verify Branch Strategy
+        run: |
+          HEAD="${{ github.head_ref }}"
+          BASE="${{ github.base_ref }}"
+          echo "Verifying path: $HEAD -> $BASE"
+          
+          if [[ "$HEAD" == feature/* && "$BASE" == release/* ]]; then
+            echo "Pull Request is allowed: $HEAD -> $BASE."
+            exit 0
+          elif [[ "$HEAD" == release/* && "$BASE" == main ]]; then
+            echo "Pull Request is allowed: $HEAD -> $BASE."
+            exit 0
+          else
+            echo "::error::Invalid Pull Request from '$HEAD' -> '$BASE'."
+            echo "Allowed: 'feature/*'->'release/*' OR 'release/*'->'main'."
+            exit 1
+          fi
+
+  # job 2: Static Analysis
+  lint-code:
+    needs: validate-branch-policy
+    runs-on: windows-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup MSVC
+        uses: ilammy/msvc-dev-cmd@v1
+        with:
+          arch: x64
+
+      - name: Install dependencies
+        shell: pwsh
+        run: |
+          choco install cmake --no-progress -y
+          choco install ninja --no-progress -y
+          choco install llvm --no-progress -y
+
+      - name: Configure CMake
+        shell: pwsh
+        run: cmake -S . -B build -G "Ninja" -DCMAKE_EXPORT_COMPILE_COMMANDS=ON
+
+      - name: Run clang-tidy
+        shell: pwsh
+        run: |
+          clang-tidy --version
+          $files = Get-ChildItem -Recurse -Path src -Include *.cpp,*.cc,*.cxx -File
+          $failed = $false
+          foreach ($file in $files) {
+            Write-Host "Checking $($file.FullName)"
+            clang-tidy -p build --header-filter=".*" "$($file.FullName)" --warnings-as-errors=*
+            if ($LASTEXITCODE -ne 0) { $failed = $true }
+          }
+          if ($failed) { Write-Error "Clang-tidy failed."; exit 1 }
+
+  # job 3: Build Project
+  build-project:
+    needs:  lint-code
+    runs-on: windows-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup MSVC
+        uses: ilammy/msvc-dev-cmd@v1
+        with:
+          arch: x64
+
+      - name: Install dependencies
+        shell: pwsh
+        run: |
+          choco install cmake --no-progress -y
+          choco install ninja --no-progress -y
+
+      - name: Configure CMake
+        shell: pwsh
+        run: cmake -S . -B build -G "Ninja"
+
+      - name: Build
+        shell: pwsh
+        run: cmake --build build --config Release
+
+      # Upload the build directory so the Test job can use it
+      - name: Upload Build Artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-artifacts
+          path: build/
+          retention-days: 1
+
+  # job 4: Run all Tests
+  run-all-tests:
+    needs: build-project
+    runs-on: windows-latest
+    steps:
+      - name: Checkout code
+        # We need the source code because CTest might look for source files referenced in tests
+        uses: actions/checkout@v4
+
+      - name: Install dependencies
+        shell: pwsh
+        # We only need CMake (for ctest) here. Ninja/LLVM usually not needed unless tests invoke them.
+        run: choco install cmake --no-progress -y
+
+      - name: Download Build Artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: build-artifacts
+          path: build
+
+      - name: Run tests
+        shell: pwsh
+        # -C Release is crucial if it's a multi-config generator, though Ninja is single-config.
+        # Good practice to keep it for consistency.
+        run: ctest --test-dir build --output-on-failure -C Release

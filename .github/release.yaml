@@ -1,0 +1,56 @@
+template: |
+  ### datastructures-algorithms — release v$RESOLVED_VERSION
+  $CHANGES
+  
+  **Full Changelog:** https://github.com/$OWNER/$REPOSITORY/compare/$PREVIOUS_TAG...v$RESOLVED_VERSION
+
+change-template: '- $TITLE [#$NUMBER]'
+
+categories:
+  - title: 'Basics'
+    labels:
+      - 'basics'
+
+  - title: 'Tree'
+    labels:
+      - 'tree'
+  
+  - title: 'Graph'
+    labels:
+      - 'graph'
+
+  - title: 'Greedy Algorithms'
+    labels:
+      - 'greedy-algorithms'
+
+  - title: 'Dynamic Programming'
+    labels:
+      - 'dynamic-programming'
+
+  - title: 'Bitwise Algorithms'
+    labels:
+      - 'bitwise-algorithms'
+
+  - title: 'Build System (CMake)'
+    labels:
+      - 'build'
+
+  - title: 'Testing Utilities'
+    labels:
+      - 'test-utils'
+
+  - title: 'Workflows Updated'
+    labels:
+      - 'workflows'
+
+  - title: 'Documentation'
+    labels:
+      - 'documentation'
+
+exclude-labels:
+  - 'skip-changelog'
+
+# Convert "## Title" to "**Title**"
+replacers:
+  - search: '/^## (.*)$/gm'
+    replace: '**$1**'

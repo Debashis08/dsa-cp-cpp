@@ -1,0 +1,33 @@
+Checks: >
+  readability-identifier-naming
+
+WarningsAsErrors: '*'
+
+HeaderFilterRegex: '(include/.*|src/.*)'
+
+CheckOptions:
+  # Private member variables
+  - key: readability-identifier-naming.PrivateMemberPrefix
+    value: _
+  - key: readability-identifier-naming.PrivateMemberCase
+    value: camelBack
+
+  # Private member methods
+  - key: readability-identifier-naming.PrivateMethodPrefix
+    value: _
+  - key: readability-identifier-naming.PrivateMethodCase
+    value: camelBack
+
+  # Public/Protected member methods
+  - key: readability-identifier-naming.MethodCase
+    value: camelBack
+
+  # Class names
+  - key: readability-identifier-naming.ClassCase
+    value: CamelCase
+
+  # Optional, but ensures errors are reported instead of silently skipped
+  - key: readability-identifier-naming.IgnoreFailures
+    value: false
+  - key: readability-identifier-naming.IgnoreFailedSplit
+    value: false
