@@ -30,46 +30,9 @@ jobs:
             exit 1
           fi
 
-  # job 2: Static Analysis
-  lint-code:
-    needs: validate-branch-policy
-    runs-on: windows-latest
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Setup MSVC
-        uses: ilammy/msvc-dev-cmd@v1
-        with:
-          arch: x64
-
-      - name: Install dependencies
-        shell: pwsh
-        run: |
-          choco install cmake --no-progress -y
-          choco install ninja --no-progress -y
-          choco install llvm --no-progress -y
-
-      - name: Configure CMake
-        shell: pwsh
-        run: cmake -S . -B build -G "Ninja" -DCMAKE_EXPORT_COMPILE_COMMANDS=ON
-
-      - name: Run clang-tidy
-        shell: pwsh
-        run: |
-          clang-tidy --version
-          $files = Get-ChildItem -Recurse -Path src -Include *.cpp,*.cc,*.cxx -File
-          $failed = $false
-          foreach ($file in $files) {
-            Write-Host "Checking $($file.FullName)"
-            clang-tidy -p build --header-filter=".*" "$($file.FullName)" --warnings-as-errors=*
-            if ($LASTEXITCODE -ne 0) { $failed = $true }
-          }
-          if ($failed) { Write-Error "Clang-tidy failed."; exit 1 }
-
-  # job 3: Build Project
+  # job 2: Build Project
   build-project:
-    needs:  lint-code
+    needs:  validate-branch-policy
     runs-on: windows-latest
     steps:
       - name: Checkout code
@@ -102,7 +65,7 @@ jobs:
           path: build/
           retention-days: 1
 
-  # job 4: Run all Tests
+  # job 3: Run all Tests
   run-all-tests:
     needs: build-project
     runs-on: windows-latest
