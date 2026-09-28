@@ -1,5 +1,5 @@
 template: |
-  ### datastructures-algorithms — release v$RESOLVED_VERSION
+  ### dsa-cp-cpp — release v$RESOLVED_VERSION
   $CHANGES
   
   **Full Changelog:** https://github.com/$OWNER/$REPOSITORY/compare/$PREVIOUS_TAG...v$RESOLVED_VERSION

@@ -1,44 +1,38 @@
-# Data Structures and Algorithms: These labels group include, src, and tests by their specific topic
+# Data Structures and Algorithms: These labels group src, and tests by their specific topic
 basics:
   - changed-files:
-      - any-glob-to-any-file: 'include/0001_Basics/**'
-      - any-glob-to-any-file: 'src/0001_Basics/**'
-      - any-glob-to-any-file: 'tests/0001_Basics/**'
+      - any-glob-to-any-file: 'src/0001_basics/**'
+      - any-glob-to-any-file: 'tests/0001_basics/**'
 tree:
   - changed-files:
-      - any-glob-to-any-file: 'include/0002_Tree/**'
-      - any-glob-to-any-file: 'src/0002_Tree/**'
-      - any-glob-to-any-file: 'tests/0002_Tree/**'
+      - any-glob-to-any-file: 'src/0002_tree/**'
+      - any-glob-to-any-file: 'tests/0002_tree/**'
 graph:
   - changed-files:
-      - any-glob-to-any-file: 'include/0003_Graph/**'
-      - any-glob-to-any-file: 'src/0003_Graph/**'
-      - any-glob-to-any-file: 'tests/0003_Graph/**'
-greedy-algorithms:
-  - changed-files:
-      - any-glob-to-any-file: 'include/0004_GreedyAlgorithms/**'
-      - any-glob-to-any-file: 'src/0004_GreedyAlgorithms/**'
-      - any-glob-to-any-file: 'tests/0004_GreedyAlgorithms/**'
+      - any-glob-to-any-file: 'src/0003_graph/**'
+      - any-glob-to-any-file: 'tests/0003_graph/**'
 dynamic-programming:
   - changed-files:
-      - any-glob-to-any-file: 'include/0005_DynamicProgramming/**'
-      - any-glob-to-any-file: 'src/0005_DynamicProgramming/**'
-      - any-glob-to-any-file: 'tests/0005_DynamicProgramming/**'
+      - any-glob-to-any-file: 'src/0004_dynamic_programming/**'
+      - any-glob-to-any-file: 'tests/0004_dynamic_programming/**'
+greedy-algorithms:
+  - changed-files:
+      - any-glob-to-any-file: 'src/0005_greedy_algorithms/**'
+      - any-glob-to-any-file: 'tests/0005_greedy_algorithms/**'
 bitwise-algorithms:
   - changed-files:
-      - any-glob-to-any-file: 'include/0006_BitwiseAlgorithms/**'
-      - any-glob-to-any-file: 'src/0006_BitwiseAlgorithms/**'
-      - any-glob-to-any-file: 'tests/0006_BitwiseAlgorithms/**'
+      - any-glob-to-any-file: 'src/0006_bitwise_algorithms/**'
+      - any-glob-to-any-file: 'tests/0006_bitwise_algorithms/**'
 
 # Build System: Only fires when every changed file is a CMakeLists.txt
 build:
   - changed-files:
       - all-globs-to-all-files: '**/CMakeLists.txt'
 
-# Testing Utils: Catches the helper files in tests/0000_CommonUtilities
+# Testing Utils: Catches the helper files in tests/0000_common
 test-utils:
   - changed-files:
-      - any-glob-to-any-file: 'tests/0000_CommonUtilities/**'
+      - any-glob-to-any-file: 'tests/0000_common/**'
 
 # Tooling: Github workflows
 workflows:
