@@ -1,6 +1,6 @@
 add_subdirectory(0000_common)
 add_subdirectory(0001_basics)
-# add_subdirectory(0002_tree)
+add_subdirectory(0002_tree)
 add_subdirectory(0003_graph)
 # add_subdirectory(0004_dynamic_programming)
 # add_subdirectory(0005_greedy_algorithms)
