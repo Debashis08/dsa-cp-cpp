@@ -1,5 +1,3 @@
-cmake_policy(SET CMP0135 NEW)
-
 include(FetchContent)
 FetchContent_Declare(
   googletest
@@ -24,11 +22,6 @@ target_link_libraries(
   GTest::gtest_main
   0002_Tree
 )
-
-# Add .clang-tidy configuration to this library.
-if(CLANG_TIDY_EXE)
-  set_target_properties(0002_Tree PROPERTIES CXX_CLANG_TIDY "${CLANG_TIDY_COMMAND}")
-endif()
 
 include(GoogleTest)
 gtest_discover_tests(0002_TreeTests DISCOVERY_TIMEOUT 30)
